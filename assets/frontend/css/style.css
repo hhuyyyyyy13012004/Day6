@@ -1,0 +1,31 @@
+h1, h2, h3, h4, h5, h6 {
+    /* Add your heading styles here if needed */
+}
+body {
+    padding-bottom: 80px;
+}
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    color: #333;
+    text-align: center;
+    padding: 12px 0 8px 0;
+    box-shadow: 0 -2px 12px rgba(54,209,196,0.08);
+    z-index: 100;
+}
+table img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(54,209,196,0.1);
+}
+.carousel-item {
+    height: 32rem;
+}
+.carousel-item img {
+    height: 100%;
+    width: 285px;
+}
