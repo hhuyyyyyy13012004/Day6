@@ -1,13 +1,5 @@
 <?php
 session_start();
-
-// // Debug session
-// echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
-// echo '<h4>Debug Cart Session:</h4>';
-// echo '<pre>';
-// var_dump($_SESSION['cart']);
-// echo '</pre>';
-// echo '</div>';
 ?>
 
 <!DOCTYPE html>
@@ -15,10 +7,8 @@ session_start();
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initialscale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Shop</title>
-    <!-- Nhúng file Quản lý các Liên kết CSS dùng chung cho toàn bộ
-trang web -->
     <?php include_once(__DIR__ . '/../layouts/styles.php'); ?>
     <style>
         .image {
@@ -29,12 +19,8 @@ trang web -->
 </head>
 
 <body class="d-flex flex-column h-100">
-    <!-- header -->
-    <?php include_once(__DIR__ . '/../layouts/partials/header.php');
-    ?>
-    <!-- end header -->
+    <?php include_once(__DIR__ . '/../layouts/partials/header.php'); ?>
     <main role="main" class="mb-2">
-        <!-- Block content -->
         <?php
         include_once(__DIR__ . '/../../dbconnect.php');
         $cart = [];
@@ -45,9 +31,7 @@ trang web -->
         }
         ?>
         <div class="container mt-4">
-            <!-- Vùng ALERT hiển thị thông báo -->
-            <div id="alert-container" class="alert alert-warning
-alert-dismissible fade d-none" role="alert">
+            <div id="alert-container" class="alert alert-warning alert-dismissible fade d-none" role="alert">
                 <div id="message">&nbsp;</div>
                 <button type="button" class="close" datadismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -75,60 +59,40 @@ alert-dismissible fade d-none" role="alert">
                                     <tr>
                                         <td><?= $no ?></td>
                                         <td>
-
                                             <?php if (empty($item['image'])) : ?>
-                                                <img
-                                                    src="/Day6/assets/shared/img/default-image_600.png" class="imgfluid image" />
+                                                <img src="/Day6/assets/shared/img/default-image_600.png" class="imgfluid image" />
                                             <?php else : ?>
-                                                <img
-                                                    src="/Day6/assets/uploads/<?= $item['image'] ?>" class="img-fluid image" />
+                                                <img src="/Day6/assets/uploads/<?= $item['image'] ?>" class="img-fluid image" />
                                             <?php endif; ?>
                                         </td>
                                         <td><?= $item['name'] ?></td>
                                         <td>
-                                            <input type="number"
-                                                class="form-control" id="quantity_<?= $item['id'] ?>" name="quantity"
-                                                value="<?= $item['quantity'] ?>" />
-                                            <button class="btn btnprimary btn-sm btn-update-quantity" data-id="<?= $item['id']
-                                                                                                                ?>">Update</button>
+                                            <input type="number" class="form-control" id="quantity_<?= $item['id'] ?>" name="quantity" value="<?= $item['quantity'] ?>" />
+                                            <button class="btn btnprimary btn-sm btn-update-quantity" data-id="<?= $item['id'] ?>">Update</button>
                                         </td>
-                                        <td><?=
-                                            number_format($item['price'], 2, ".", ",") ?> vnđ</td>
-                                        <td><?=
-                                            number_format($item['quantity'] * $item['price'], 2, ".", ",") ?>
-                                            vnđ</td>
+                                        <td><?= number_format($item['price'], 2, ".", ",") ?> vnđ</td>
+                                        <td><?= number_format($item['quantity'] * $item['price'], 2, ".", ",") ?> vnđ</td>
                                         <td>
-                                            <a id="delete_<?= $no ?>"
-                                                data-id="<?= $item['id'] ?>" class="btn btn-danger btn-deleteproduct">
-                                                <i class="fa fa-trash"
-                                                    aria-hidden="true"></i> Delete
+                                            <a id="delete_<?= $no ?>" data-id="<?= $item['id'] ?>" class="btn btn-danger btn-delete-product">
+                                                <i class="fa fa-trash" aria-hidden="true"></i> Delete
                                             </a>
                                         </td>
                                     </tr>
+                                    <?php $no++; ?>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     <?php else : ?>
                         <h2>Cart Empty</h2>
-
                     <?php endif; ?>
-                    <a href="/Day6/frontend" class="btn btnwarning btn-md"><i class="fa fa-arrow-left" aria-hidden="true"></i>
-                        Continue Shopping</a>
-                    <a href="/Day6/frontend/pages/checkout.php"
-                        class="btn btn-primary btn-md"><i class="fa fa-shopping-cart" ariahidden="true"></i> Checkout</a>
+                    <a href="/Day6/frontend" class="btn btnwarning btn-md"><i class="fa fa-arrow-left" aria-hidden="true"></i> Continue Shopping</a>
+                    <a href="/Day6/frontend/pages/checkout.php" class="btn btn-primary btn-md"><i class="fa fa-shopping-cart" ariahidden="true"></i> Checkout</a>
                 </div>
             </div>
         </div>
-        <!-- End block content -->
     </main>
-    <!-- footer -->
-    <?php include_once(__DIR__ . '/../layouts/partials/footer.php');
-    ?>
-    <!-- end footer -->
-    <!-- Nhúng file quản lý phần SCRIPT JAVASCRIPT -->
+    <?php include_once(__DIR__ . '/../layouts/partials/footer.php'); ?>
     <?php include_once(__DIR__ . '/../layouts/scripts.php'); ?>
-    <!-- Các file Javascript sử dụng riêng cho trang này, liên kết tại
-đây -->
     <script>
         $(document).ready(function() {
             function removeProductItem(id) {
@@ -141,30 +105,28 @@ alert-dismissible fade d-none" role="alert">
                     dataType: 'json',
                     data: data,
                     success: function(data) {
-                        // Refresh lại trang
-                        location.reload();
-
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            $('#message').html(`<h1>${data.message}</h1>`);
+                            $('.alert').removeClass('d-none').addClass('show');
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
-                        var htmlString = `<h1>Can not delete
-item</h1>`;
-                        $('#message').html(htmlString);
-                        $('.alert').removeClass('dnone').addClass('show');
+                        console.log("AJAX error:", textStatus, errorThrown);
+                        $('#message').html(`<h1>Lỗi kết nối tới server</h1>`);
+                        $('.alert').removeClass('d-none').addClass('show');
                     }
+
                 });
             };
-            // Đăng ký sự kiện cho các nút đang sử dụng class .btndelete-sanpham
-            $('#tblCart').on('click', '.btn-delete-product',
-                function(event) {
-                    event.preventDefault();
-                    var id = $(this).data('id');
-                    console.log(id);
-                    removeProductItem(id);
-                });
-            // Cập nhật số lượng trong Giỏ hảng
+            $('#tblCart').on('click', '.btn-delete-product', function(event) {
+                event.preventDefault();
+                var id = $(this).data('id');
+                removeProductItem(id);
+            });
+
             function updateCartItem(id, quantity) {
-                // Dữ liệu gởi
                 var data = {
                     id: id,
                     quantity: quantity
@@ -178,22 +140,19 @@ item</h1>`;
                         location.reload();
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-
                         console.log(textStatus, errorThrown);
-                        var htmlString = `<h1>Can not update
-item</h1>`;
+                        var htmlString = `<h1>Can not update item</h1>`;
                         $('#message').html(htmlString);
-                        $('.alert').removeClass('dnone').addClass('show');
+                        $('.alert').removeClass('d-none').addClass('show');
                     }
                 });
             };
-            $('#tblCart').on('click', '.btn-update-quantity',
-                function(event) {
-                    event.preventDefault();
-                    var id = $(this).data('id');
-                    var quantity = $('#quantity_' + id).val();
-                    updateCartItem(id, quantity);
-                });
+            $('#tblCart').on('click', '.btn-update-quantity', function(event) {
+                event.preventDefault();
+                var id = $(this).data('id');
+                var quantity = $('#quantity_' + id).val();
+                updateCartItem(id, quantity);
+            });
         });
     </script>
 </body>

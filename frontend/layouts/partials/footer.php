@@ -3,7 +3,11 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-10">
-                <span>Copyright &copy; by <a href="https://localhost/Day6">Demo Shop</a> - <script>document.write(new Date().getFullYear());</script>.</span>
+                <span>Copyright &copy; by <a href="http://localhost/Day6">DemoShop</a> -
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>.
+                </span>
                 <span class="text-muted">Simple shopping cart</span>
             </div>
         </div>
