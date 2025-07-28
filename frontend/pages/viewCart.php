@@ -100,15 +100,19 @@ session_start();
                     id: id
                 };
                 $.ajax({
-                    url: '/Day6/frontend/api/removeCartItem.php',
+                    url: '/Day6/frontend/pages/api/removeCartItem.php',
                     method: "POST",
                     dataType: 'json',
                     data: data,
                     success: function(data) {
-                        if (data.success) {
-                            location.reload();
+                        if (data && typeof data === 'object') {
+                            $("#delete_" + id).closest('tr').remove();
+                            if (Object.keys(data).length === 0) {
+                                $('#tblCart').remove();
+                                $('.col-md-12').append('<h2>Cart Empty</h2>');
+                            }
                         } else {
-                            $('#message').html(`<h1>${data.message}</h1>`);
+                            $('#message').html(`<h1>Lỗi xóa sản phẩm</h1>`);
                             $('.alert').removeClass('d-none').addClass('show');
                         }
                     },
@@ -117,7 +121,6 @@ session_start();
                         $('#message').html(`<h1>Lỗi kết nối tới server</h1>`);
                         $('.alert').removeClass('d-none').addClass('show');
                     }
-
                 });
             };
             $('#tblCart').on('click', '.btn-delete-product', function(event) {
@@ -132,16 +135,25 @@ session_start();
                     quantity: quantity
                 };
                 $.ajax({
-                    url: '/Day6/frontend/api/updateCartItem.php',
+                    url: '/Day6/frontend/pages/api/updateCartItem.php',
                     method: "POST",
                     dataType: 'json',
                     data: data,
                     success: function(data) {
-                        location.reload();
+                        if (data.success && data.cart && data.cart[id]) {
+                            var item = data.cart[id];
+                            var $row = $('#quantity_' + id).closest('tr');
+                            $row.find('input[name="quantity"]').val(item.quantity);
+                            $row.find('td').eq(5).text(Number(item.quantity * item.price).toLocaleString('en-US', {minimumFractionDigits: 2}) + ' vnđ');
+                        } else {
+                            var htmlString = `<h1>${data.message || 'Can not update item'}</h1>`;
+                            $('#message').html(htmlString);
+                            $('.alert').removeClass('d-none').addClass('show');
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(textStatus, errorThrown);
-                        var htmlString = `<h1>Can not update item</h1>`;
+                        var htmlString = `<h1>Lỗi kết nối tới server</h1>`;
                         $('#message').html(htmlString);
                         $('.alert').removeClass('d-none').addClass('show');
                     }
